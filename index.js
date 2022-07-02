@@ -9,9 +9,9 @@ config(); // https://github.com/sveltejs/sapper/issues/122
 // const urldata = require('fastify-url-data')
 
 
-const app = fastify({ logger: false })
+const server = fastify()
 // app.register(urldata)
-app.register(cors, {
+server.register(cors, {
   // put your options here
   origin: ['*', 'http://localhost:3000'],
   methods: ['*'],
@@ -21,8 +21,8 @@ app.register(cors, {
 })
 
 
-app.get('/', function (request, reply) {
-  reply.send("test")
+server.get('/', function (request, reply) {
+  reply.code(200).send({ message: "Hello world!" });
 })
 
 async function getfile(cid, gateway) {
@@ -37,7 +37,7 @@ async function getfile(cid, gateway) {
   }
 }
 
-app.get("/:cid", async (req, res) => {
+server.get("/:cid", async (req, res) => {
   const cid = req.params.cid;
   const name = req.query.name;
 
@@ -75,20 +75,18 @@ app.get("/:cid", async (req, res) => {
 });
 
 
-// for local node testing only
-app.listen(3000, (err, address) => {
+server.listen(process.env.PORT || 8080, "0.0.0.0", (err, address) => {
   if (err) {
-    app.log.error(err)
-    process.exit(1)
+    console.error(err);
+    process.exit(1);
   }
-  app.log.info(`server listening on ${address}`)
-})
-
+  console.log(`Server listening at ${address}`);
+});
 // module.exports = app
 // export default app
 
-export default async (req, res) => {
-  await app.ready();
-  app.server.emit('request', req, res);
-}
+// export default async (req, res) => {
+//   await app.ready();
+//   app.server.emit('request', req, res);
+// }
 
