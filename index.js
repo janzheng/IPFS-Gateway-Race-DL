@@ -85,5 +85,10 @@ app.listen(3000, (err, address) => {
 })
 
 // module.exports = app
-export default app
+// export default app
+
+export default async (req, res) => {
+  await app.ready();
+  app.server.emit('request', req, res);
+}
 
